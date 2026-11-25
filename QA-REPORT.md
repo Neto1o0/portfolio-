@@ -108,3 +108,35 @@ Cada ejecución cubrió carga, consola/red, notch, i18n, About, Playground, moda
 8. **Nombre en el notch móvil:** en ≤520 px se oculta visualmente para que quepan los iconos; sigue disponible para lectores de pantalla y el hero muestra el nombre. Confirmar que es el trade-off deseado.
 9. **Dependencias externas:** Lenis (unpkg) y Google Fonts. La app ya degrada bien sin Lenis; para producción conviene self-hostear ambos por fiabilidad/privacidad.
 10. **Formularios:** la web no contiene formularios, por lo que no hubo validación de formularios que probar.
+
+---
+
+## 7. Correcciones posteriores (25 de noviembre de 2026)
+
+Tras la publicación en GitHub Pages (`https://neto1o0.github.io/portfolio-/`) se corrigieron dos fallos visuales detectados en producción.
+
+### 7.1 Timeline · imágenes de "Versatility" en escritorio
+
+- **Causa:** las imágenes del trail se crean en JavaScript con una ruta absoluta (`/${nombre}`), por lo que en GitHub Pages apuntaban a la raíz del dominio (`/USS.jpg`) en lugar de al subdirectorio del sitio (`/portfolio-/USS.jpg`). En móvil no se notaba porque esas imágenes vienen del HTML y Vite sí reescribe esas rutas al compilar.
+- **Fix (`main.js`):** la ruta base se calcula desde `window.location.pathname` y se concatena al nombre del archivo, de modo que funciona tanto en local (`/`) como en GitHub Pages (`/portfolio-/`).
+- **Extra (`index.html`):** los `data-modal-src` de los vídeos 1080p pasaron de rutas absolutas a relativas (`./VideoSpace-1080.mp4`, etc.), porque Vite no reescribe atributos `data-*` y el modal abría un 404 en producción.
+
+### 7.2 About móvil · "This is me" desalineado
+
+- **Causa:** el carrusel centraba cada slide completo (imagen + título + descripción), así que el centro de la imagen quedaba por encima del centro del bloque y el texto "This is me" aparecía más abajo.
+- **Fix (`style.css`, solo `≤768px`):** los slides se alinean arriba (`align-items: flex-start`) y el bloque `.intro-block` usa la misma altura que `.carousel-media` (`clamp(190px, 32vh, 260px)`), por lo que su centro coincide exactamente con el centro de la imagen. El bloque "More about" conserva su centrado con `align-self: center`.
+
+### 7.3 Verificación
+
+- **390×844 y 768×1024:** diferencia entre el centro de "This is me" y el centro de la imagen = **0 px**; sin scroll horizontal.
+- **1440×900:** las imágenes del trail cargan desde `/portfolio-/…` con estado **200** y `naturalWidth > 0`; captura con la imagen visible sobre el texto de Versatility.
+- **Modal de proyecto:** `currentSrc` = `/portfolio-/VideoSpace-1080.mp4`, respuesta **206** y vídeo visible.
+- `npm run build` OK con la base `/portfolio-/` de `vite.config.js`.
+
+### 7.4 Archivos tocados en esta corrección
+
+| Archivo | Cambio |
+|---------|--------|
+| `main.js` | Ruta base para las imágenes del trail de Versatility. |
+| `index.html` | `data-modal-src` relativos para los vídeos 1080p. |
+| `style.css` | Alineación superior de slides y altura del bloque "This is me" en móvil. |

@@ -1968,6 +1968,10 @@ const trailImages = [
   'murano.JPG',
   'parlantes.jpeg'
 ];
+// Runtime image paths must respect the deployed base path (e.g. /portfolio-/ on GitHub Pages).
+const assetBasePath = window.location.pathname.endsWith('/')
+  ? window.location.pathname
+  : window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/') + 1);
 let trailIndex = 0;
 let lastTrailPos = { x: 0, y: 0 };
 
@@ -1981,7 +1985,7 @@ if (trailContainer) {
     lastTrailPos = { x: event.clientX, y: event.clientY };
     const rect = trailContainer.getBoundingClientRect();
     const image = document.createElement('img');
-    image.src = `/${trailImages[trailIndex]}`;
+    image.src = `${assetBasePath}${trailImages[trailIndex]}`;
     image.className = 'trail-image';
     image.style.left = `${event.clientX - rect.left}px`;
     image.style.top = `${event.clientY - rect.top}px`;

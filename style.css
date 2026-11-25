@@ -2371,7 +2371,8 @@ body,
   .horizontal-track {
     display: flex !important;
     flex-direction: row !important;
-    align-items: center !important;
+    /* Top-align slides so every carousel image starts at the same height. */
+    align-items: flex-start !important;
     width: max-content !important;
     height: auto !important;
     gap: 1.25rem !important;
@@ -2383,7 +2384,8 @@ body,
     width: auto !important;
     min-width: 65vw !important;
     max-width: 75vw !important;
-    height: auto !important;
+    /* Match the media height so "This is me" centers on the carousel images. */
+    height: clamp(190px, 32vh, 260px) !important;
     padding: 0 1.5rem 0 0 !important;
     justify-content: center !important;
     align-items: center !important;
@@ -2486,6 +2488,7 @@ body,
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
+    align-self: center !important;
     scroll-snap-align: center;
     flex-shrink: 0 !important;
   }
