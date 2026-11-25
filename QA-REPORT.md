@@ -140,3 +140,11 @@ Tras la publicación en GitHub Pages (`https://neto1o0.github.io/portfolio-/`) s
 | `main.js` | Ruta base para las imágenes del trail de Versatility. |
 | `index.html` | `data-modal-src` relativos para los vídeos 1080p. |
 | `style.css` | Alineación superior de slides y altura del bloque "This is me" en móvil. |
+
+### 7.5 Incidente de despliegue (workflow Jekyll duplicado)
+
+- **Síntoma:** tras el primer despliegue, el sitio dejó de mostrar imágenes y vídeos y servía `style.css`/`main.js` sin compilar.
+- **Causa:** el workflow heredado `Deploy Jekyll with GitHub Pages dependencies preinstalled` también se ejecutaba en cada push y publicaba la raíz del repositorio, sobrescribiendo el artefacto de `dist/` generado por Vite. Los medios quedaban en `/portfolio-/public/...`, no en las rutas que espera la página.
+- **Fix:** se eliminó `.github/workflows/jekyll-gh-pages.yml`; solo queda el workflow de Vite (`deploy.yml`), que publica `dist/` con base `/portfolio-/`.
+- **Verificación en producción:** HTML con assets compilados, `style.css`/`main.js` ya no se sirven desde la raíz, imágenes con estado 200 y vídeos con 206; About móvil centrado y trail de Versatility visible.
+- **Nota de códecs:** `designvid.mp4` y `compressor.mp4` están en HEVC. WebKit y Firefox los reproducen; Chromium headless no. Para máxima compatibilidad en todos los navegadores conviene convertirlos a H.264.
